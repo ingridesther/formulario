@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Cadastro</title>
+    <!-- Link para o CSS do Bootstrap para estilização e responsividade -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Estilo para os campos readonly (apenas leitura) */
+        .readonly {
+            background-color: #f2f2f2; /* Cor para diferenciar campos não editáveis */
+        }
+    </style>
+</head>
+<body>
+
+        <!--
+        Sala 3º Ano J - Grupo:
+        Ana Clara Gonçalez Pavani        - Nº01
+        Guilherme Henrique Rocha Felippe - Nº06
+        Guilherme Jeorge Alves Nonato    - Nº07
+        Ingrid Esther Antonio da Silva   - Nº08
+
+
+
+        Classes Bootstrap utilizadas:
+
+        - container: centraliza o conteúdo e limita a largura da página.
+        - mt-5: adiciona uma margem superior de 5 unidades, para espaçar o formulário.
+        - text-center e mb-4: centralizam o texto e adicionam margem inferior para o título.
+        - form-group: agrupa cada campo do formulário e seu rótulo com espaçamento adequado.
+        - form-control: estiliza os inputs para que fiquem uniformes e responsivos.
+        - invalid-feedback: exibe mensagens de erro de validação no estilo Bootstrap.
+        - btn, btn-primary, btn-block: estilizam o botão, tornando-o azul (primário) e com largura total.
+        - readonly: adiciona fundo acinzentado aos campos não editáveis, diferenciando-os visualmente.
+        - needs-validation e was-validated: aplicam o sistema de validação de formulários do Bootstrap.
+    -->
+
+    <!-- Container do Bootstrap que centraliza o conteúdo e adiciona margens automáticas -->
+    <div class="container mt-5">
+        <!-- Título do formulário centralizado -->
+        <h2 class="text-center mb-4">Formulário de Cadastro</h2>
+        <!-- Início do formulário com validação e preventivo de submissão quando inválido -->
+        <form id="formCadastro" onsubmit="return validarFormulario()" class="needs-validation" novalidate>
+            
+            <!-- Campo de Nome Completo -->
+            <div class="form-group">
+                <!-- Label para orientar o usuário -->
+                <label for="nome">Nome Completo:</label>
+                <!-- Campo de entrada de texto com formatação automática da capitalização do nome -->
+                <input type="text" class="form-control" id="nome" name="nome" required oninput="formatarNome()" placeholder="Ex: João da Silva">
+                <!-- Feedback de erro para o campo caso seja deixado vazio -->
+                <div class="invalid-feedback">Por favor, insira o seu nome completo.</div>
+            </div>
+
+            <!-- Campo de Data de Nascimento -->
+            <div class="form-group">
+                <label for="dataNascimento">Data de Nascimento:</label>
+                <!-- Campo de entrada de data com validação automática e cálculo da idade -->
+                <input type="date" class="form-control" id="dataNascimento" name="dataNascimento" required onchange="calcularIdade()">
+                <div class="invalid-feedback">Por favor, insira sua data de nascimento.</div>
+            </div>
+
+            <!-- Campo de Idade (calculado automaticamente) -->
+            <div class="form-group">
+                <label for="idade">Idade:</label>
+                <!-- Campo readonly preenchido automaticamente com a idade calculada -->
+                <input type="text" class="form-control readonly" id="idade" name="idade" readonly>
+            </div>
+
+            <!-- Campo de CPF -->
+            <div class="form-group">
+                <label for="cpf">CPF:</label>
+                <!-- Campo de entrada de CPF com máscara de formatação e validação de dígitos -->
+                <input type="text" class="form-control" id="cpf" name="cpf" required maxlength="14" oninput="mascaraCPF()" placeholder="000.000.000-00">
+                <div class="invalid-feedback">Por favor, insira um CPF válido.</div>
+            </div>
+
+            <!-- Campo de Telefone -->
+            <div class="form-group">
+                <label for="telefone">Telefone:</label>
+                <!-- Campo de entrada de telefone com máscara de formatação para facilitar preenchimento -->
+                <input type="text" class="form-control" id="telefone" name="telefone" required maxlength="15" oninput="mascaraTelefone()" placeholder="(00) 00000-0000">
+                <div class="invalid-feedback">Por favor, insira um número de telefone válido.</div>
+            </div>
+
+            <!-- Campo de Usuário -->
+            <div class="form-group">
+                <label for="usuario">Usuário:</label>
+                <input type="text" class="form-control" id="usuario" name="usuario" required placeholder="Nome de usuário">
+                <div class="invalid-feedback">Por favor, insira um nome de usuário.</div>
+            </div>
+
+            <!-- Campo de Senha -->
+            <div class="form-group">
+                <label for="senha">Senha:</label>
+                <!-- Campo de entrada de senha com restrição de pelo menos 8 caracteres -->
+                <input type="password" class="form-control" id="senha" name="senha" required>
+                <div class="invalid-feedback">A senha deve ter pelo menos 8 caracteres.</div>
+            </div>
+
+            <!-- Campo de Confirmação da Senha -->
+            <div class="form-group">
+                <label for="confirmaSenha">Confirmação da Senha:</label>
+                <input type="password" class="form-control" id="confirmaSenha" name="confirmaSenha" required>
+                <div class="invalid-feedback">A confirmação da senha deve coincidir com a senha.</div>
+            </div>
+
+            <!-- Botão de Enviar -->
+            <button type="submit" class="btn btn-primary btn-block">Enviar</button>
+        </form>
+    </div>
+
+    <!-- Inclusão dos scripts do Bootstrap para funcionalidade de componentes -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        // Adiciona classes Bootstrap para validação de formulário
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+
+        // Função para formatar o nome com a primeira letra de cada palavra em maiúscula
+        function formatarNome() {
+            const nomeCampo = document.getElementById("nome");
+            nomeCampo.value = nomeCampo.value.toLowerCase().replace(/(?:^|\s)\S/g, function(c) {
+                return c.toUpperCase();
+            });
+        }
+
+        // Função para calcular idade com base na data de nascimento
+        function calcularIdade() {
+            const dataNascimento = new Date(document.getElementById("dataNascimento").value);
+            const hoje = new Date();
+            let idade = hoje.getFullYear() - dataNascimento.getFullYear();
+            const mes = hoje.getMonth() - dataNascimento.getMonth();
+
+            if (mes < 0 || (mes === 0 && hoje.getDate() < dataNascimento.getDate())) {
+                idade--;
+            }
+
+            // Validação da idade: impede datas futuras
+            if (idade < 0 || isNaN(idade)) {
+                alert("Data de nascimento inválida. Por favor, insira uma data correta.");
+                document.getElementById("idade").value = "";
+                document.getElementById("dataNascimento").value = "";
+                return;
+            }
+            
+            document.getElementById("idade").value = idade;
+        }
+
+        // Função para adicionar máscara no CPF (formato nnn.nnn.nnn-nn)
+        function mascaraCPF() {
+            const cpfCampo = document.getElementById("cpf");
+            let cpf = cpfCampo.value.replace(/\D/g, "");
+            if (cpf.length > 3) cpf = cpf.slice(0, 3) + "." + cpf.slice(3);
+            if (cpf.length > 7) cpf = cpf.slice(0, 7) + "." + cpf.slice(7);
+            if (cpf.length > 11) cpf = cpf.slice(0, 11) + "-" + cpf.slice(11, 13);
+            cpfCampo.value = cpf;
+        }
+
+        // Função para adicionar máscara no telefone (formato (00) 00000-0000)
+        function mascaraTelefone() {
+            const telefoneCampo = document.getElementById("telefone");
+            let telefone = telefoneCampo.value.replace(/\D/g, "");
+
+            if (telefone.length <= 10) {
+                telefone = telefone.replace(/^(\d{2})(\d{4})(\d{4})$/, "($1) $2-$3");
+            } else if (telefone.length === 11) {
+                telefone = telefone.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
+            }
+
+            telefoneCampo.value = telefone;
+        }
+
+        // Função para validar o CPF (verificação dos dígitos verificadores)
+        function validarCPF(cpf) {
+            cpf = cpf.replace(/\D/g, "");
+            if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+
+            let soma = 0, resto;
+
+            for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf.substring(9, 10))) return false;
+
+            soma = 0;
+            for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+
+            return resto === parseInt(cpf.substring(10, 11));
+        }
+
+        // Função principal para validar o formulário antes de enviar
+        function validarFormulario() {
+            const cpfCampo = document.getElementById("cpf").value;
+            const senha = document.getElementById("senha").value;
+            const confirmaSenha = document.getElementById("confirmaSenha").value;
+
+            if (!validarCPF(cpfCampo)) {
+                alert("CPF inválido. Por favor, insira um CPF correto.");
+                return false;
+            }
+
+            if (senha.length < 8) {
+                alert("A senha deve ter pelo menos 8 caracteres.");
+                return false;
+            }
+
+            if (senha !== confirmaSenha) {
+                alert("A senha e a confirmação devem coincidir.");
+                return false;
+            }
+            alert("Formulário enviado com sucesso!"); // Alerta para envio bem-sucedido
+            return true;
+        }
+    </script>
+</body>
+</html>
